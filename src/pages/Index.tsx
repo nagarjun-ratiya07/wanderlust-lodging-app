@@ -1,4 +1,3 @@
-// Home page for hotel room booking demo
 
 import * as React from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -7,6 +6,7 @@ import { RoomList } from "@/components/RoomList";
 import { BookingModal } from "@/components/BookingModal";
 import { Room } from "@/components/RoomList";
 import { BookingList, Booking } from "@/components/BookingList";
+import { Mail, Phone } from "lucide-react";
 
 const Index = () => {
   const [selectedRoom, setSelectedRoom] = React.useState<Room | null>(null);
@@ -58,6 +58,23 @@ const Index = () => {
           <section id="bookings" className="flex-1">
             <h2 className="text-xl font-semibold mb-4 mt-10">My Bookings</h2>
             <BookingList bookings={bookings} />
+          </section>
+          <section
+            id="contact-info"
+            className="mt-4 max-w-xl mx-auto bg-white rounded-lg shadow border px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4"
+          >
+            <div>
+              <h3 className="text-lg font-bold text-primary mb-1">Contact Information</h3>
+              <p className="text-gray-600 mb-2">Have questions or need help with your booking? Reach out to us:</p>
+              <div className="flex items-center gap-2 mb-1">
+                <Mail size={18} className="text-primary" />
+                <span className="text-sm text-gray-700">contact@wanderlusthotel.com</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone size={18} className="text-primary" />
+                <span className="text-sm text-gray-700">+1 (555) 123-4567</span>
+              </div>
+            </div>
           </section>
           <footer className="text-xs text-gray-400 text-center pt-10">
             &copy; {new Date().getFullYear()} Wanderlust Hotel. For demo only.

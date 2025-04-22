@@ -21,9 +21,10 @@ type Room = {
 };
 
 type Booking = {
-  id: string; // unique id for booking
+  id: string;
   room: Room;
-  date: Date;
+  checkIn: Date;
+  checkOut: Date;
   name: string;
   email: string;
 };
@@ -36,41 +37,43 @@ type Props = {
 };
 
 export function BookingModal({ open, room, onClose, onBookingConfirmed }: Props) {
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
+  // Single state object for range, to ensure correct typing for Calendar
+  const [dateRange, setDateRange] = React.useState<{ from?: Date; to?: Date }>({ from: undefined, to: undefined });
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const canBook = Boolean(room && date && name && email);
+  const canBook =
+    Boolean(room) && !!dateRange.from && !!dateRange.to && !!name && !!email;
 
   function handleBook() {
-    if (!room || !date || !name || !email) return;
+    if (!room || !dateRange.from || !dateRange.to || !name || !email) return;
     const booking: Booking = {
       id: Date.now().toString(),
       room,
-      date,
+      checkIn: dateRange.from,
+      checkOut: dateRange.to,
       name,
       email,
     };
 
-    // Show toast
     toast({
       title: `Booking Confirmed`,
       description: (
         <div>
           <strong>{room.name}</strong><br />
-          {date ? format(date, "PPP") : ""}<br />
+          {format(dateRange.from, "PPP")} - {format(dateRange.to, "PPP")}
+          <br />
           {name} ({email})
         </div>
       ),
     });
 
-    // Propagate new booking to parent
     if (onBookingConfirmed) {
       onBookingConfirmed(booking);
     }
 
     onClose();
     setTimeout(() => {
-      setDate(undefined);
+      setDateRange({ from: undefined, to: undefined });
       setName("");
       setEmail("");
     }, 300);
@@ -92,27 +95,30 @@ export function BookingModal({ open, room, onClose, onBookingConfirmed }: Props)
             <span>${room.priceNight}/night</span>
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium">Select Date</label>
+            <label className="block mb-1 text-sm font-medium">Select Dates</label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
+                    (!dateRange.from || !dateRange.to) && "text-muted-foreground"
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4 opacity-60" />
-                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                  {dateRange.from && dateRange.to
+                    ? `${format(dateRange.from, "MMM d, yyyy")} - ${format(dateRange.to, "MMM d, yyyy")}`
+                    : <span>Pick check-in and check-out</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
+                  mode="range"
+                  selected={dateRange}
+                  onSelect={(range) => setDateRange(range ?? { from: undefined, to: undefined })}
                   initialFocus
-                  className="p-3 pointer-events-auto"
+                  numberOfMonths={2}
+                  className={cn("p-3 pointer-events-auto")}
                 />
               </PopoverContent>
             </Popover>

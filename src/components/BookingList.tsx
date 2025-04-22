@@ -14,7 +14,8 @@ export type Booking = {
     description: string;
     available: boolean;
   };
-  date: Date;
+  checkIn: Date;
+  checkOut: Date;
   name: string;
   email: string;
 };
@@ -46,7 +47,11 @@ export const BookingList = ({ bookings }: Props) => {
           />
           <div className="flex-1 px-4 py-2">
             <div className="font-semibold text-lg">{booking.room.name}</div>
-            <div className="text-gray-600 text-sm">{format(new Date(booking.date), "PPP")}</div>
+            <div className="text-gray-600 text-sm">
+              {format(new Date(booking.checkIn), "PPP")}
+              {" "}—{" "}
+              {format(new Date(booking.checkOut), "PPP")}
+            </div>
             <div className="text-gray-500 text-xs">{booking.name} ({booking.email})</div>
           </div>
           <div className="font-bold text-primary px-4">${booking.room.priceNight}</div>

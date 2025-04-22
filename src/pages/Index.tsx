@@ -12,7 +12,7 @@ const Index = () => {
   const [selectedRoom, setSelectedRoom] = React.useState<Room | null>(null);
   const [bookingOpen, setBookingOpen] = React.useState(false);
 
-  // Keep bookings in local state
+  // Update bookings type to match new Booking shape with checkIn/checkOut
   const [bookings, setBookings] = React.useState<Booking[]>([]);
 
   function handleBook(room: Room) {
@@ -25,7 +25,7 @@ const Index = () => {
     setSelectedRoom(null);
   }
 
-  // Handle confirmed booking, passing full booking details
+  // Accept updated booking with checkIn/checkOut
   function handleBookingConfirmed(booking: Booking) {
     setBookings(prev => [...prev, booking]);
   }

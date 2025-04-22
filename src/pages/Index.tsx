@@ -1,4 +1,3 @@
-
 // Home page for hotel room booking demo
 
 import * as React from "react";
@@ -7,10 +6,14 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { RoomList } from "@/components/RoomList";
 import { BookingModal } from "@/components/BookingModal";
 import { Room } from "@/components/RoomList";
+import { BookingList, Booking } from "@/components/BookingList";
 
 const Index = () => {
   const [selectedRoom, setSelectedRoom] = React.useState<Room | null>(null);
   const [bookingOpen, setBookingOpen] = React.useState(false);
+
+  // Keep bookings in local state
+  const [bookings, setBookings] = React.useState<Booking[]>([]);
 
   function handleBook(room: Room) {
     setSelectedRoom(room);
@@ -20,6 +23,11 @@ const Index = () => {
   function handleCloseModal() {
     setBookingOpen(false);
     setSelectedRoom(null);
+  }
+
+  // Handle confirmed booking, passing full booking details
+  function handleBookingConfirmed(booking: Booking) {
+    setBookings(prev => [...prev, booking]);
   }
 
   return (
@@ -35,11 +43,20 @@ const Index = () => {
             <h2 className="text-xl font-semibold mb-4">Available Rooms</h2>
             <RoomList onBook={handleBook} />
           </section>
+          <section id="bookings" className="flex-1">
+            <h2 className="text-xl font-semibold mb-4 mt-10">My Bookings</h2>
+            <BookingList bookings={bookings} />
+          </section>
           <footer className="text-xs text-gray-400 text-center pt-10">
             &copy; {new Date().getFullYear()} Wanderlust Hotel. For demo only.
           </footer>
         </main>
-        <BookingModal open={bookingOpen} room={selectedRoom} onClose={handleCloseModal} />
+        <BookingModal
+          open={bookingOpen}
+          room={selectedRoom}
+          onClose={handleCloseModal}
+          onBookingConfirmed={handleBookingConfirmed}
+        />
         <SidebarTrigger />
       </div>
     </SidebarProvider>

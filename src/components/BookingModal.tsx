@@ -20,20 +20,38 @@ type Room = {
   available: boolean;
 };
 
+type Booking = {
+  id: string; // unique id for booking
+  room: Room;
+  date: Date;
+  name: string;
+  email: string;
+};
+
 type Props = {
   open: boolean;
   room: Room | null;
   onClose: () => void;
+  onBookingConfirmed?: (booking: Booking) => void;
 };
 
-export function BookingModal({ open, room, onClose }: Props) {
+export function BookingModal({ open, room, onClose, onBookingConfirmed }: Props) {
   const [date, setDate] = React.useState<Date | undefined>(undefined);
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const canBook = Boolean(room && date && name && email);
 
   function handleBook() {
-    if (!room) return;
+    if (!room || !date || !name || !email) return;
+    const booking: Booking = {
+      id: Date.now().toString(),
+      room,
+      date,
+      name,
+      email,
+    };
+
+    // Show toast
     toast({
       title: `Booking Confirmed`,
       description: (
@@ -44,6 +62,12 @@ export function BookingModal({ open, room, onClose }: Props) {
         </div>
       ),
     });
+
+    // Propagate new booking to parent
+    if (onBookingConfirmed) {
+      onBookingConfirmed(booking);
+    }
+
     onClose();
     setTimeout(() => {
       setDate(undefined);

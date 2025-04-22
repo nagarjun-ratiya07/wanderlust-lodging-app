@@ -12,7 +12,6 @@ const Index = () => {
   const [selectedRoom, setSelectedRoom] = React.useState<Room | null>(null);
   const [bookingOpen, setBookingOpen] = React.useState(false);
 
-  // Update bookings type to match new Booking shape with checkIn/checkOut
   const [bookings, setBookings] = React.useState<Booking[]>([]);
 
   function handleBook(room: Room) {
@@ -25,7 +24,6 @@ const Index = () => {
     setSelectedRoom(null);
   }
 
-  // Accept updated booking with checkIn/checkOut
   function handleBookingConfirmed(booking: Booking) {
     setBookings(prev => [...prev, booking]);
   }
@@ -43,6 +41,20 @@ const Index = () => {
             <h2 className="text-xl font-semibold mb-4">Available Rooms</h2>
             <RoomList onBook={handleBook} />
           </section>
+          {selectedRoom && (
+            <section id="selected-room" className="flex flex-col md:flex-row bg-white shadow rounded-lg border mb-8 p-4 gap-6 items-center max-w-2xl mx-auto">
+              <img
+                src={selectedRoom.imageUrl}
+                alt={selectedRoom.name}
+                className="w-36 h-36 rounded object-cover"
+              />
+              <div className="flex-1 min-w-0">
+                <div className="font-bold text-lg">{selectedRoom.name}</div>
+                <div className="text-sm text-gray-600 mb-2">${selectedRoom.priceNight} per night &bull; {selectedRoom.beds} beds &bull; up to {selectedRoom.maxGuests} guests</div>
+                <div className="text-gray-500 text-sm">{selectedRoom.description}</div>
+              </div>
+            </section>
+          )}
           <section id="bookings" className="flex-1">
             <h2 className="text-xl font-semibold mb-4 mt-10">My Bookings</h2>
             <BookingList bookings={bookings} />

@@ -1,6 +1,8 @@
 
 import * as React from "react";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 export type Booking = {
   id: string;
@@ -22,9 +24,10 @@ export type Booking = {
 
 type Props = {
   bookings: Booking[];
+  onCancel?: (bookingId: string) => void;
 };
 
-export const BookingList = ({ bookings }: Props) => {
+export const BookingList = ({ bookings, onCancel }: Props) => {
   if (!bookings.length) {
     return (
       <div className="text-gray-500 text-center py-8">
@@ -54,7 +57,20 @@ export const BookingList = ({ bookings }: Props) => {
             </div>
             <div className="text-gray-500 text-xs">{booking.name} ({booking.email})</div>
           </div>
-          <div className="font-bold text-primary px-4">${booking.room.priceNight}</div>
+          <div className="flex flex-col items-end gap-2 pr-4">
+            <div className="font-bold text-primary">${booking.room.priceNight}</div>
+            {onCancel && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => onCancel(booking.id)}
+                className="flex items-center gap-1 mt-2"
+              >
+                <Trash2 size={16} />
+                Cancel
+              </Button>
+            )}
+          </div>
         </div>
       ))}
     </div>

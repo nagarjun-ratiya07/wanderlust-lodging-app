@@ -7,6 +7,7 @@ import { BookingModal } from "@/components/BookingModal";
 import { Room } from "@/components/RoomList";
 import { BookingList, Booking } from "@/components/BookingList";
 import { Mail, Phone } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [selectedRoom, setSelectedRoom] = React.useState<Room | null>(null);
@@ -26,6 +27,14 @@ const Index = () => {
 
   function handleBookingConfirmed(booking: Booking) {
     setBookings(prev => [...prev, booking]);
+  }
+
+  function handleBookingCancel(bookingId: string) {
+    setBookings(prev => prev.filter(b => b.id !== bookingId));
+    toast({
+      title: "Booking Cancelled",
+      description: "Your booking has been successfully cancelled.",
+    });
   }
 
   return (
@@ -57,7 +66,7 @@ const Index = () => {
           )}
           <section id="bookings" className="flex-1">
             <h2 className="text-xl font-semibold mb-4 mt-10">My Bookings</h2>
-            <BookingList bookings={bookings} />
+            <BookingList bookings={bookings} onCancel={handleBookingCancel} />
           </section>
           <section
             id="contact-info"

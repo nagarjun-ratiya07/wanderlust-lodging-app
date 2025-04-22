@@ -31,10 +31,11 @@ export const RoomCard = ({ room, onBook }: Props) => (
       <div className="flex items-center justify-between mt-auto">
         <span className="text-primary font-bold text-lg">${room.priceNight}/night</span>
         <Button
+          variant="default"
           size="sm"
           disabled={!room.available}
           onClick={() => onBook(room)}
-          className="rounded-full"
+          className="bg-[#9b87f5] hover:bg-[#7E69AB] text-white rounded-full transition-colors duration-300 ease-in-out"
         >
           {room.available ? "Book Now" : (
             <span className="flex items-center gap-1"><DoorClosed size={14} /> Unavailable</span>
